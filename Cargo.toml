@@ -1,8 +1,21 @@
 [package]
 name = "random-branch"
+keywords = ["pick", "choose", "match"]
 version = "0.1.0"
 description = "Provides a macro to select a random branch like match"
 authors = ["Cryptjar <cryptjar@junk.studio>"]
 edition = "2018"
 
-[dependencies]
+
+[features]
+default = ["std"]
+std = ["rand/std", "rand/std_rng"]
+doc_cfg = [] # Requires Nightly Rust, enables the doc_cfg nightly feature to mark items that require crate-features.
+
+
+[dependencies.rand]
+version = "0.8"
+default-features = false
+
+[dev-dependencies.rand_pcg]
+version = "0.3"
