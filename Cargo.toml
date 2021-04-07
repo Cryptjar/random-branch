@@ -5,12 +5,21 @@ version = "0.1.0"
 description = "Provides a macro to select a random branch like match"
 authors = ["Cryptjar <cryptjar@junk.studio>"]
 edition = "2018"
+repository = "https://github.com/cryptjar/random-branch"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
 
 
 [features]
+# Default features
 default = ["std"]
+
+# Requires std, enables the `branch` macro
 std = ["rand/std", "rand/std_rng"]
-doc_cfg = [] # Requires Nightly Rust, enables the doc_cfg nightly feature to mark items that require crate-features.
+
+# Requires Nightly Rust, enables the doc_cfg nightly feature to mark items that
+# require crate-features. Only useful for documentation.
+doc_cfg = []
 
 
 [dependencies.rand]
@@ -20,5 +29,7 @@ default-features = false
 [dev-dependencies.rand_pcg]
 version = "0.3"
 
+
+# Enable all features when building docs on docs.rs
 [package.metadata.docs.rs]
-all-features = true # enable all features when building docs on docs.rs
+all-features = true
