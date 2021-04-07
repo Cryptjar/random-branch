@@ -19,3 +19,6 @@ default-features = false
 
 [dev-dependencies.rand_pcg]
 version = "0.3"
+
+[package.metadata.docs.rs]
+all-features = true # enable all features when building docs on docs.rs

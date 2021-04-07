@@ -13,18 +13,56 @@
 // Denies invalid links in docs
 #![deny(broken_intra_doc_links)]
 
+//! Provides a macro to select a random branch.
+//!
+//! This crate provides the [`branch`](crate::branch) and
+//! [`branch_using`](crate::branch_using) macro, which will
+//! execute randomly one of the given expressions.
+//!
+//! It is maybe best visualized by the following example:
+//!
+//! ```rust
+//! # use random_branch::branch;
+//! branch!(
+//!     println!("First line."),
+//!     println!("Second line?"),
+//!     println!("Third line!"),
+//! );
+//! ```
+//!
+//! This will be turned into something similar to this:
+//!
+//! ```rust
+//! # use rand::Rng;
+//! match rand::thread_rng().gen_range(0..3) {
+//!     0 => println!("First line."),
+//!     1 => println!("Second line?"),
+//!     2 => println!("Third line!"),
+//!     _ => unreachable!(),
+//! }
+//! ```
+//!
+//! For more details see [`branch`](crate::branch) and
+//! [`branch_using`](crate::branch_using). The basic difference between them is,
+//! that `branch` uses [`rand::thread_rng()`](rand::thread_rng()) whereas
+//! `branch_using` uses the the given [`rand::Rng`](rand::Rng).
+//!
+
+
 
 /// Branches into one of the given expressions using the given RNG.
 ///
-/// This macro dose essentially the same as [`branch`] but uses the given RNG.
+/// This macro dose essentially the same as [`branch`] but uses the given
+/// [`Rng`](rand::Rng).
 ///
 /// This macro turns something like this:
 ///
 /// ```rust
 /// # use rand_pcg::Lcg64Xsh32;
 /// # use random_branch::branch_using;
-/// let mut my_rng = /* sinp */
+/// let mut my_rng = /* snip */
 /// # Lcg64Xsh32::new(0,0);
+///
 /// branch_using!( my_rng, {
 ///     println!("First line."),
 ///     println!("Second line?"),
@@ -36,9 +74,10 @@
 ///
 /// ```rust
 /// # use rand_pcg::Lcg64Xsh32;
-/// let mut my_rng = /* sinp */
+/// let mut my_rng = /* snip */
 /// # Lcg64Xsh32::new(0,0);
 /// # use rand::Rng;
+///
 /// match my_rng.gen_range(0..3) {
 ///     0 => println!("First line."),
 ///     1 => println!("Second line?"),
@@ -58,8 +97,9 @@
 ///      println!("There is no such thing")
 /// }
 /// let thing = "fuliluf";
-/// let mut my_rng = /* sinp */
+/// let mut my_rng = /* snip */
 /// # Lcg64Xsh32::new(0,0);
+///
 /// branch_using!( my_rng, {
 ///     println!("A {} is an animal!", thing),
 ///     {
@@ -76,8 +116,9 @@
 /// ```rust
 /// # use rand_pcg::Lcg64Xsh32;
 /// use random_branch::branch_using;
-/// let mut my_rng = /* sinp */
+/// let mut my_rng = /* snip */
 /// # Lcg64Xsh32::new(0,0);
+///
 /// let num = branch_using!( my_rng, {
 ///     10,
 ///     10 + 11,
@@ -135,10 +176,12 @@ macro_rules! branch_using {
 ///
 /// ```rust
 /// use random_branch::branch;
+///
 /// fn do_something() {
 ///      println!("There is no such thing")
 /// }
 /// let thing = "fuliluf";
+///
 /// branch!(
 ///     println!("A {} is an animal!", thing),
 ///     {
@@ -154,6 +197,7 @@ macro_rules! branch_using {
 ///
 /// ```rust
 /// use random_branch::branch;
+///
 /// let num = branch!(
 ///     10,
 ///     10 + 11,
@@ -224,7 +268,6 @@ macro_rules! branch_internal {
 		}
 	}};
 }
-
 
 #[cfg(test)]
 mod tests {
