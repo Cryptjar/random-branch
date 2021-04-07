@@ -1,6 +1,6 @@
 [package]
 name = "random-branch"
-keywords = ["pick", "choose", "match"]
+keywords = ["pick", "choose", "match", "random"]
 version = "0.1.0-alpha.1"
 description = "Provides a macro to select a random branch like match"
 authors = ["Cryptjar <cryptjar@junk.studio>"]
@@ -8,6 +8,7 @@ edition = "2018"
 repository = "https://github.com/cryptjar/random-branch"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
+categories = ["algorithms", "no-std"]
 
 
 [features]
