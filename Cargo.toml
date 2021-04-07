@@ -1,0 +1,8 @@
+[package]
+name = "random-branch"
+version = "0.1.0"
+description = "Provides a macro to select a random branch like match"
+authors = ["Cryptjar <cryptjar@junk.studio>"]
+edition = "2018"
+
+[dependencies]
