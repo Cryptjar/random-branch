@@ -22,17 +22,20 @@
 //! It is maybe best visualized by the following example:
 //!
 //! ```rust
+//! # #[cfg(features = "std")] { // only with std
 //! # use random_branch::branch;
 //! branch!(
 //!     println!("First line."),
 //!     println!("Second line?"),
 //!     println!("Third line!"),
 //! );
+//! # } // only with std
 //! ```
 //!
 //! This will be turned into something similar to this:
 //!
 //! ```rust
+//! # #[cfg(features = "std")] { // only with std
 //! # use rand::Rng;
 //! match rand::thread_rng().gen_range(0..3) {
 //!     0 => println!("First line."),
@@ -40,6 +43,7 @@
 //!     2 => println!("Third line!"),
 //!     _ => unreachable!(),
 //! }
+//! # } // only with std
 //! ```
 //!
 //! For more details see [`branch`](crate::branch) and
@@ -48,6 +52,10 @@
 //! `branch_using` uses the the given [`rand::Rng`](rand::Rng).
 //!
 
+
+// Reexport our version of rand so we can use it from our macros.
+#[doc(hidden)]
+pub use rand;
 
 
 /// Branches into one of the given expressions using the given RNG.
@@ -131,8 +139,8 @@
 macro_rules! branch_using {
 	( $rng:expr, { $( $branch:expr ),* $(,)? }) => {
 		{
-			random_branch::branch_internal!(@parseRule $rng, 0,
-				{ },
+			$crate::branch_internal!(
+				$rng,
 				{ $( { $branch } )* },
 			)
 		}
@@ -213,8 +221,8 @@ macro_rules! branch_using {
 macro_rules! branch {
 	( $( $branch:expr ),* $(,)? ) => {
 		{
-			random_branch::branch_internal!(@parseRule rand::thread_rng(), 0,
-				{ },
+			$crate::branch_internal!(
+				$crate::rand::thread_rng(),
 				{ $( { $branch } )* },
 			)
 		}
@@ -234,8 +242,8 @@ macro_rules! branch {
 #[macro_export]
 macro_rules! branch_internal {
 	// Entry pattern
-	( $rng:expr, $( $branches:tt )* ) => {
-		random_branch::branch_internal!(@parseRule $rng, 0, {}, { $( $branches:tt )* })
+	( $rng:expr, { $( $branches:tt )* }, ) => {
+		$crate::branch_internal!(@parseRule $rng, 0, {}, { $( $branches )* },)
 	};
 
 	// Invalid, base case
@@ -251,7 +259,7 @@ macro_rules! branch_internal {
 		{ $branch:tt $( $rest:tt )* },
 	) => {
 		{
-			random_branch::branch_internal!(@parseRule $rng, $cnt + 1,
+			$crate::branch_internal!(@parseRule $rng, $cnt + 1,
 				{ $( $stuff )* { $cnt => $branch } },
 				{ $( $rest )* },
 			)
@@ -262,7 +270,7 @@ macro_rules! branch_internal {
 		{ $( { $cc:expr => $branch:tt } )* },
 		{ },
 	) => {{
-		match rand::Rng::gen_range(&mut $rng, 0 .. ($cnt)) {
+		match $crate::rand::Rng::gen_range(&mut $rng, 0 .. ($cnt)) {
 			$( n if n == $cc => $branch )*
 			_ => unreachable!()
 		}
