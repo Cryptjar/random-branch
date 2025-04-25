@@ -37,7 +37,7 @@
 //! ```rust
 //! # #[cfg(features = "std")] { // only with std
 //! # use rand::Rng;
-//! match rand::thread_rng().random_range(0..3) {
+//! match rand::rng().random_range(0..3) {
 //!     0 => println!("First line."),
 //!     1 => println!("Second line?"),
 //!     2 => println!("Third line!"),
