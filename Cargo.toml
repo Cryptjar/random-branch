@@ -24,11 +24,15 @@ doc_cfg = []
 
 
 [dependencies.rand]
-version = "0.8"
+version = "0.9"
 default-features = false
 
+[dev-dependencies.rand]
+version = "0.9"
+features = ["default"]
+
 [dev-dependencies.rand_pcg]
-version = "0.3"
+version = "0.9"
 
 
 # Enable all features when building docs on docs.rs

@@ -11,7 +11,7 @@
 #![deny(unreachable_pub)]
 
 // Denies invalid links in docs
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 //! Provides a macro to select a random branch.
 //!
@@ -37,7 +37,7 @@
 //! ```rust
 //! # #[cfg(features = "std")] { // only with std
 //! # use rand::Rng;
-//! match rand::thread_rng().gen_range(0..3) {
+//! match rand::thread_rng().random_range(0..3) {
 //!     0 => println!("First line."),
 //!     1 => println!("Second line?"),
 //!     2 => println!("Third line!"),
@@ -48,7 +48,7 @@
 //!
 //! For more details see [`branch`](crate::branch) and
 //! [`branch_using`](crate::branch_using). The basic difference between them is,
-//! that `branch` uses [`rand::thread_rng()`](rand::thread_rng()) whereas
+//! that `branch` uses [`rand::rng()`](rand::rng()) whereas
 //! `branch_using` uses the the given [`rand::Rng`](rand::Rng).
 //!
 
@@ -86,7 +86,7 @@ pub use rand;
 /// # Lcg64Xsh32::new(0,0);
 /// # use rand::Rng;
 ///
-/// match my_rng.gen_range(0..3) {
+/// match my_rng.random_range(0..3) {
 ///     0 => println!("First line."),
 ///     1 => println!("Second line?"),
 ///     2 => println!("Third line!"),
@@ -151,7 +151,7 @@ macro_rules! branch_using {
 /// Branches into one of the given expressions.
 ///
 /// This macro dose essentially the same as [`branch_using`] instead of giving
-/// it some RNG, this macro will simply use the [`rand::thread_rng()`].
+/// it some RNG, this macro will simply use the [`rand::rng()`].
 /// However, this then requires `std`, unlike `branch_using`.
 ///
 /// This macro turns something like this:
@@ -165,11 +165,11 @@ macro_rules! branch_using {
 /// );
 /// ```
 ///
-/// into something similar to this using the `thread_rng()`:
+/// into something similar to this using the `rand::rng()`:
 ///
 /// ```rust
 /// # use rand::Rng;
-/// match rand::thread_rng().gen_range(0..3) {
+/// match rand::rng().random_range(0..3) {
 ///     0 => println!("First line."),
 ///     1 => println!("Second line?"),
 ///     2 => println!("Third line!"),
@@ -222,7 +222,7 @@ macro_rules! branch {
 	( $( $branch:expr ),* $(,)? ) => {
 		{
 			$crate::branch_internal!(
-				$crate::rand::thread_rng(),
+				$crate::rand::rng(),
 				{ $( { $branch } )* },
 			)
 		}
@@ -270,7 +270,7 @@ macro_rules! branch_internal {
 		{ $( { $cc:expr => $branch:tt } )* },
 		{ },
 	) => {{
-		match $crate::rand::Rng::gen_range(&mut $rng, 0 .. ($cnt)) {
+		match $crate::rand::Rng::random_range(&mut $rng, 0 .. ($cnt)) {
 			$( n if n == $cc => $branch )*
 			_ => unreachable!()
 		}
@@ -279,5 +279,5 @@ macro_rules! branch_internal {
 
 #[cfg(test)]
 mod tests {
-	// We actually use mostly doc-tests, which are better suited for macro tests
+    // We actually use mostly doc-tests, which are better suited for macro tests
 }
